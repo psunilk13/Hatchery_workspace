@@ -1,0 +1,459 @@
+.production-custom-container {
+    display: block !important;
+}
+
+/* =========================================================
+   PRODUCTION WORKSPACE
+   ========================================================= */
+
+.production-custom-container {
+    width: 100%;
+    margin-top: 18px;
+    margin-bottom: 30px;
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.production-custom-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+
+    width: 100%;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.production-custom-card {
+    position: relative;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe5ec;
+
+    border-radius: 14px;
+
+    padding: 18px;
+
+    min-height: 190px;
+
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.04);
+
+    overflow: hidden;
+
+    transition:
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* Colored top border */
+
+.production-custom-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 0;
+
+    height: 3px;
+
+    background:
+        var(--production-color);
+
+}
+
+
+/* Hover */
+
+.production-custom-card:hover {
+
+    box-shadow:
+        0 5px 18px rgba(0, 0, 0, 0.08);
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.production-custom-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    margin-bottom: 14px;
+}
+
+
+/* =========================================================
+   ICON
+   ========================================================= */
+
+.production-custom-icon {
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    background: #f5f7fb;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   HEADER TEXT
+   ========================================================= */
+
+.production-custom-title {
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    color: #102a43;
+
+    line-height: 1.2;
+}
+
+
+.production-custom-subtitle {
+
+    font-size: 12px;
+
+    color: #6b7c93;
+
+    margin-top: 3px;
+}
+
+
+/* =========================================================
+   ITEMS
+   ========================================================= */
+
+.production-custom-items {
+
+    width: 100%;
+}
+
+
+/* =========================================================
+   ROW
+   ========================================================= */
+
+.production-custom-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    min-height: 42px;
+
+    padding: 4px 2px;
+
+    border-radius: 8px;
+
+    transition:
+        background 0.15s ease;
+}
+
+
+.production-custom-row:hover {
+
+    background: #f7f9fc;
+}
+
+
+/* =========================================================
+   NAME
+   ========================================================= */
+
+.production-custom-name {
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    color: #102a43;
+
+    cursor: pointer;
+
+    flex: 1;
+
+    padding: 8px 6px;
+
+    transition:
+        color 0.15s ease;
+}
+
+
+.production-custom-name:hover {
+
+    color: #2563eb;
+
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   RIGHT SIDE
+   ========================================================= */
+
+.production-custom-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-left: 10px;
+}
+
+
+/* =========================================================
+   COUNT
+   ========================================================= */
+
+.production-custom-count {
+
+    min-width: 34px;
+
+    height: 24px;
+
+    padding:
+        3px 9px;
+
+    border-radius: 20px;
+
+    background: #f4f6f9;
+
+    color: #52667a;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition:
+        opacity 0.2s ease;
+}
+
+
+.production-custom-count.loading {
+
+    opacity: 0.45;
+}
+
+
+/* =========================================================
+   PLUS BUTTON
+   ========================================================= */
+
+.production-custom-add {
+
+    width: 30px;
+
+    height: 30px;
+
+    padding: 0;
+
+    border-radius: 8px;
+
+    border: 1px solid #d9e1ea;
+
+    background: #ffffff;
+
+    color: #2563eb;
+
+    font-size: 19px;
+
+    line-height: 28px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition:
+        all 0.15s ease;
+}
+
+
+.production-custom-add:hover {
+
+    background: #2563eb;
+
+    border-color: #2563eb;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 2px 6px rgba(
+            37,
+            99,
+            235,
+            0.25
+        );
+}
+
+
+.production-custom-add:active {
+
+    transform:
+        scale(0.94);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .production-custom-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .production-custom-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .production-custom-card {
+
+        min-height: auto;
+
+    }
+
+}
+
+/* =========================================================
+   FEED EXECUTION BOARD
+   ========================================================= */
+
+.production-custom-board {
+
+    min-width: 52px;
+
+    height: 24px;
+
+    padding: 3px 10px;
+
+    border-radius: 20px;
+
+    background: #fff4e6;
+
+    color: #d97706;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+/* =========================================================
+   BOARD ARROW
+   ========================================================= */
+
+.production-custom-board-arrow {
+
+    width: 30px;
+
+    height: 30px;
+
+    padding: 0;
+
+    margin-left: 2px;
+
+    border-radius: 8px;
+
+    border: 1px solid #d9e1ea;
+
+    background: #ffffff;
+
+    color: #d97706;
+
+    font-size: 17px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition: all 0.15s ease;
+
+}
+
+
+.production-custom-board-arrow:hover {
+
+    background: #d97706;
+
+    border-color: #d97706;
+
+    color: #ffffff;
+
+}
