@@ -1,186 +1,118 @@
 (() => {
+    "use strict";
 
-    console.log("========================================");
     console.log("Production Workspace JS Loaded");
-    console.log("========================================");
-
 
     // =========================================================
-    // WORKSPACE NAME
+    // CONFIGURATION
     // =========================================================
 
     const PRODUCTION_WORKSPACE = "Production";
-
+    const CONTAINER_CLASS = "production-custom-container";
 
     // =========================================================
-    // PRODUCTION WORKSPACE CONFIGURATION
+    // PRODUCTION SECTIONS
     // =========================================================
 
     const SECTIONS = [
-
-        // =====================================================
-        // PRODUCTION MASTERS (Keep Counts)
-        // =====================================================
-
         {
             title: "Production Masters",
             subtitle: "Facilities & infrastructure",
             icon: "⌂",
             color: "#2563eb",
-
             items: [
-
                 {
                     label: "Shed",
                     doctype: "Shed"
                 },
-
                 {
                     label: "Hatchery Tank",
                     doctype: "Hatchery Tank"
                 },
-
                 {
                     label: "Reservoir",
                     doctype: "Reservoir"
                 }
-
             ]
         },
-
-
-        // =====================================================
-        // PRODUCTION ENTRIES (No Counts)
-        // =====================================================
-
         {
             title: "Production Entries",
             subtitle: "Cycles & stocking",
             icon: "⟳",
             color: "#7c3aed",
-
             items: [
-
                 {
                     label: "Shrimp Batch",
                     doctype: "Shrimp Batch",
                     no_count: true
                 },
-
                 {
                     label: "Tank Stocking",
                     doctype: "Tank Stocking",
                     no_count: true
                 }
-
             ]
         },
-
-
-        // =====================================================
-        // RESERVOIR LOGS (No Counts)
-        // =====================================================
-
         {
             title: "Reservoir Logs",
             subtitle: "Water requests & quality",
             icon: "💧",
             color: "#0891b2",
-
             items: [
-
                 {
                     label: "Water Request",
                     doctype: "Water Request",
                     no_count: true
                 },
-
                 {
                     label: "Reservoir Daily Log",
                     doctype: "Reservoir Daily Log",
                     no_count: true
                 }
-
             ]
         },
-
-
-        // =====================================================
-        // FEED (No Counts)
-        // =====================================================
-
         {
             title: "Feed",
             subtitle: "Scheduling & execution",
             icon: "◉",
             color: "#d97706",
-
             items: [
-
-                // ---------------------------------------------
-                // REAL DOCTYPE
-                // ---------------------------------------------
-
                 {
                     label: "Feed Schedule",
                     doctype: "Feed Schedule",
                     no_count: true
                 },
-
-
-                // ---------------------------------------------
-                // FEED EXECUTION BOARD
-                // ---------------------------------------------
-
                 {
                     label: "Feed Execution Board",
                     route: "Form/Feed Execution Board",
                     no_count: true,
                     board: true
                 }
-
             ]
         },
-
-
-        // =====================================================
-        // HEALTH LOGS (No Counts)
-        // =====================================================
-
         {
             title: "Health Logs",
             subtitle: "Checks & microbiology",
             icon: "⌁",
             color: "#dc2626",
-
             items: [
-
                 {
                     label: "Walk Through",
                     doctype: "Walk Through",
                     no_count: true
                 },
-
                 {
                     label: "Daily Micro Checks",
                     doctype: "Daily Micro Checks",
                     no_count: true
                 }
-
             ]
         },
-
-
-        // =====================================================
-        // ALGAE LOGS (No Counts)
-        // =====================================================
-
         {
             title: "Algae Logs",
             subtitle: "Inoculation → growth → harvest",
             icon: "🌿",
             color: "#16a34a",
-
             items: [
                 {
                     label: "Inoculation",
@@ -208,42 +140,31 @@
                 }
             ]
         }
-
     ];
-    
 
     // =========================================================
     // CHECK CURRENT WORKSPACE
     // =========================================================
 
-    function is_production_workspace() {
-
-        const route = frappe.get_route();
-
-        console.log(
-            "Current route:",
-            route
-        );
-
-
-        if (!route) {
+    function isProductionWorkspace() {
+        if (!window.frappe || !frappe.get_route) {
             return false;
         }
 
+        const route = frappe.get_route();
 
-        return (
+        return Boolean(
+            route &&
             route[0] === "Workspaces" &&
             route[1] === PRODUCTION_WORKSPACE
         );
-
     }
-
 
     // =========================================================
     // GET DOCTYPE COUNT
     // =========================================================
 
-    function get_count(doctype, filters, callback) {
+    function getCount(doctype, filters, callback) {
         if (!doctype) {
             callback(0);
             return;
@@ -255,802 +176,362 @@
                 doctype: doctype,
                 filters: filters || {}
             },
-            callback: function(r) {
-                callback(
-                    r && r.message !== undefined
-                        ? r.message
-                        : 0
-                );
+            callback: function (response) {
+                const count =
+                    response &&
+                    response.message !== undefined
+                        ? response.message
+                        : 0;
+
+                callback(count);
             },
-            error: function(error) {
+            error: function (error) {
                 console.error(
-                    "Count error for:",
+                    "Production count error:",
                     doctype,
                     error
                 );
-                callback(0);
+
+                callback("—");
             }
         });
     }
 
-
     // =========================================================
-    // OPEN DOCTYPE LIST
+    // OPEN LIST
     // =========================================================
 
-    function open_list(
-        doctype
-    ) {
+    function openList(doctype, filters) {
+        if (!doctype) return;
 
-        if (!doctype) {
-            return;
+        if (filters) {
+            frappe.route_options = { ...filters };
+        } else {
+            frappe.route_options = {};
         }
 
-
-        frappe.set_route(
-            "List",
-            doctype
-        );
-
+        frappe.set_route("List", doctype);
     }
-
 
     // =========================================================
     // CREATE NEW DOCUMENT
     // =========================================================
 
-    function create_new(
-        doctype
-    ) {
+    function createNew(doctype, filters) {
+        if (!doctype) return;
 
-        if (!doctype) {
-            return;
+        if (filters) {
+            frappe.route_options = { ...filters };
+        } else {
+            frappe.route_options = {};
         }
 
-
-        frappe.new_doc(
-            doctype
-        );
-
+        frappe.new_doc(doctype);
     }
-
 
     // =========================================================
     // OPEN CUSTOM ROUTE
     // =========================================================
 
-    function open_route(
-        route
-    ) {
+    function openRoute(route) {
+        if (!route) return;
 
-        if (!route) {
-            return;
-        }
-
-
-        // If route is supplied as array
         if (Array.isArray(route)) {
-
-            frappe.set_route(
-                ...route
-            );
-
-            return;
-
+            frappe.set_route(...route);
+        } else {
+            frappe.set_route(route);
         }
-
-
-        // Normal string route
-        frappe.set_route(
-            route
-        );
-
     }
-
 
     // =========================================================
     // CREATE ITEM ROW
     // =========================================================
 
-    function create_item(
-        item
-    ) {
+    function createItem(item) {
+        const row = document.createElement("div");
+        row.className = "production-custom-row";
 
-        // -----------------------------------------------------
-        // ROW
-        // -----------------------------------------------------
+        // Item name
+        const name = document.createElement("div");
+        name.className = "production-custom-name";
+        name.textContent = item.label;
+        name.title = "Open " + item.label;
+        name.setAttribute("role", "button");
+        name.setAttribute("tabindex", "0");
 
-        const row =
-            document.createElement(
-                "div"
-            );
-
-
-        row.className =
-            "production-custom-row";
-
-
-        // -----------------------------------------------------
-        // ITEM NAME
-        // -----------------------------------------------------
-
-        const name =
-            document.createElement(
-                "div"
-            );
-
-
-        name.className =
-            "production-custom-name";
-
-
-        name.innerText =
-            item.label;
-
-
-        // -----------------------------------------------------
-        // NAME CLICK
-        // -----------------------------------------------------
-
-        name.addEventListener(
-            "click",
-            function () {
-
-                // ---------------------------------------------
-                // NORMAL DOCTYPE
-                // ---------------------------------------------
-
-                if (item.doctype) {
-                    if (item.filters) {
-                        frappe.route_options = item.filters;
-                    }
-
-                    frappe.set_route("List", item.doctype);
-                    return;
-                }
-
-
-                // ---------------------------------------------
-                // CUSTOM ROUTE
-                // ---------------------------------------------
-
-                if (
-                    item.route
-                ) {
-
-                    open_route(
-                        item.route
-                    );
-
-                    return;
-
-                }
-
+        function openItem() {
+            if (item.doctype) {
+                openList(item.doctype, item.filters);
+            } else if (item.route) {
+                openRoute(item.route);
             }
-        );
-
-
-        // -----------------------------------------------------
-        // RIGHT SIDE
-        // -----------------------------------------------------
-
-        const right =
-            document.createElement(
-                "div"
-            );
-
-
-        right.className =
-            "production-custom-right";
-
-
-        // =====================================================
-        // BOARD ITEM
-        // =====================================================
-
-        if (
-            item.board
-        ) {
-
-            // The board badge creation is commented out to hide the theme
-            /*
-            const board =
-                document.createElement(
-                    "span"
-                );
-
-            board.className =
-                "production-custom-board";
-
-            board.innerText =
-                "Board";
-
-            right.appendChild(
-                board
-            );
-            */
-
-
-            // -----------------------------------------------
-            // ARROW BUTTON
-            // -----------------------------------------------
-
-            const arrow =
-                document.createElement(
-                    "button"
-                );
-
-
-            arrow.className =
-                "production-custom-board-arrow";
-
-
-            arrow.innerHTML =
-                "→";
-
-
-            arrow.title =
-                "Open " +
-                item.label;
-
-
-            arrow.addEventListener(
-                "click",
-                function (event) {
-
-                    event.stopPropagation();
-
-
-                    open_route(
-                        item.route
-                    );
-
-                }
-            );
-
-
-            right.appendChild(
-                arrow
-            );
-
         }
 
+        name.addEventListener("click", openItem);
 
-        // =====================================================
-        // NORMAL DOCTYPE
-        // =====================================================
+        name.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                openItem();
+            }
+        });
 
-        else if (
-            item.doctype
-        ) {
+        // Right-side controls
+        const right = document.createElement("div");
+        right.className = "production-custom-right";
 
-            // -------------------------------------------------
-            // COUNT
-            // -------------------------------------------------
+        // Feed execution board
+        if (item.board) {
+            const arrow = document.createElement("button");
 
-            if (
-                !item.no_count
-            ) {
+            arrow.type = "button";
+            arrow.className = "production-custom-board-arrow";
+            arrow.textContent = "→";
+            arrow.title = "Open " + item.label;
+            arrow.setAttribute("aria-label", "Open " + item.label);
 
-                const count =
-                    document.createElement(
-                        "span"
-                    );
+            arrow.addEventListener("click", function (event) {
+                event.stopPropagation();
+                openRoute(item.route);
+            });
 
+            right.appendChild(arrow);
+        }
 
-                count.className =
-                    "production-custom-count";
+        // Normal DocType item
+        else if (item.doctype) {
+            // Count badge
+            if (!item.no_count) {
+                const count = document.createElement("span");
 
+                count.className = "production-custom-count";
+                count.textContent = "...";
 
-                count.innerText =
-                    "...";
+                right.appendChild(count);
 
-                get_count(
+                getCount(
                     item.doctype,
                     item.filters || {},
-                    function(value) {
-                        count.innerText = value;
+                    function (value) {
+                        if (count.isConnected) {
+                            count.textContent = value;
+                        }
                     }
                 );
-
-
-                right.appendChild(
-                    count
-                );
-
             }
 
+            // Create button
+            const plus = document.createElement("button");
 
-            // -------------------------------------------------
-            // PLUS BUTTON
-            // -------------------------------------------------
+            plus.type = "button";
+            plus.className = "production-custom-add";
+            plus.textContent = "+";
+            plus.title = "Create " + item.label;
+            plus.setAttribute("aria-label", "Create " + item.label);
 
-            const plus =
-                document.createElement(
-                    "button"
-                );
+            plus.addEventListener("click", function (event) {
+                event.stopPropagation();
+                createNew(item.doctype, item.filters);
+            });
 
-
-            plus.className =
-                "production-custom-add";
-
-
-            plus.innerHTML =
-                "+";
-
-
-            plus.title =
-                "Create " +
-                item.label;
-
-
-            plus.addEventListener(
-                "click",
-                function (event) {
-
-                    event.stopPropagation();
-
-                    // Pre-fill fields for the new doc if filters are defined in the config
-                    if (item.filters) {
-                        frappe.route_options = item.filters;
-                    }
-
-                    create_new(
-                        item.doctype
-                    );
-
-                }
-            );
-
-
-            right.appendChild(
-                plus
-            );
-
+            right.appendChild(plus);
         }
 
-
-        // -----------------------------------------------------
-        // ADD TO ROW
-        // -----------------------------------------------------
-
-        row.appendChild(
-            name
-        );
-
-
-        row.appendChild(
-            right
-        );
-
+        row.appendChild(name);
+        row.appendChild(right);
 
         return row;
-
     }
-
 
     // =========================================================
     // CREATE SECTION CARD
     // =========================================================
 
-    function create_card(
-        section
-    ) {
-
-        // -----------------------------------------------------
-        // CARD
-        // -----------------------------------------------------
-
-        const card =
-            document.createElement(
-                "div"
-            );
-
-
-        card.className =
-            "production-custom-card";
-
+    function createCard(section) {
+        const card = document.createElement("div");
+        card.className = "production-custom-card";
 
         card.style.setProperty(
             "--production-color",
             section.color
         );
 
+        // Header
+        const header = document.createElement("div");
+        header.className = "production-custom-header";
 
-        // -----------------------------------------------------
-        // HEADER
-        // -----------------------------------------------------
+        // Icon
+        const icon = document.createElement("div");
+        icon.className = "production-custom-icon";
+        icon.textContent = section.icon;
+        icon.setAttribute("aria-hidden", "true");
 
-        const header =
-            document.createElement(
-                "div"
-            );
+        // Header text
+        const headerText = document.createElement("div");
+        headerText.className = "production-custom-header-text";
 
+        const title = document.createElement("div");
+        title.className = "production-custom-title";
+        title.textContent = section.title;
 
-        header.className =
-            "production-custom-header";
+        const subtitle = document.createElement("div");
+        subtitle.className = "production-custom-subtitle";
+        subtitle.textContent = section.subtitle;
 
+        headerText.appendChild(title);
+        headerText.appendChild(subtitle);
 
-        // -----------------------------------------------------
-        // ICON
-        // -----------------------------------------------------
+        header.appendChild(icon);
+        header.appendChild(headerText);
 
-        const icon =
-            document.createElement(
-                "div"
-            );
+        card.appendChild(header);
 
+        // Items
+        const items = document.createElement("div");
+        items.className = "production-custom-items";
 
-        icon.className =
-            "production-custom-icon";
+        section.items.forEach(function (item) {
+            items.appendChild(createItem(item));
+        });
 
-
-        icon.innerText =
-            section.icon;
-
-
-        // -----------------------------------------------------
-        // HEADER TEXT
-        // -----------------------------------------------------
-
-        const header_text =
-            document.createElement(
-                "div"
-            );
-
-
-        header_text.className =
-            "production-custom-header-text";
-
-
-        // -----------------------------------------------------
-        // TITLE
-        // -----------------------------------------------------
-
-        const title =
-            document.createElement(
-                "div"
-            );
-
-
-        title.className =
-            "production-custom-title";
-
-
-        title.innerText =
-            section.title;
-
-
-        // -----------------------------------------------------
-        // SUBTITLE
-        // -----------------------------------------------------
-
-        const subtitle =
-            document.createElement(
-                "div"
-            );
-
-
-        subtitle.className =
-            "production-custom-subtitle";
-
-
-        subtitle.innerText =
-            section.subtitle;
-
-
-        // -----------------------------------------------------
-        // HEADER ASSEMBLY
-        // -----------------------------------------------------
-
-        header_text.appendChild(
-            title
-        );
-
-
-        header_text.appendChild(
-            subtitle
-        );
-
-
-        header.appendChild(
-            icon
-        );
-
-
-        header.appendChild(
-            header_text
-        );
-
-
-        card.appendChild(
-            header
-        );
-
-
-        // =====================================================
-        // ITEMS
-        // =====================================================
-
-        const items =
-            document.createElement(
-                "div"
-            );
-
-
-        items.className =
-            "production-custom-items";
-
-
-        section.items.forEach(
-            function (item) {
-
-                items.appendChild(
-                    create_item(
-                        item
-                    )
-                );
-
-            }
-        );
-
-
-        card.appendChild(
-            items
-        );
-
+        card.appendChild(items);
 
         return card;
-
     }
 
+    // =========================================================
+    // FIND WORKSPACE CONTENT AREA
+    // =========================================================
+
+    function findWorkspaceContainer() {
+        // Prefer the main content area used by Frappe.
+        return (
+            document.querySelector(
+                ".layout-main-section-wrapper .layout-main-section"
+            ) ||
+            document.querySelector(".layout-main-section")
+        );
+    }
 
     // =========================================================
     // RENDER PRODUCTION WORKSPACE
     // =========================================================
 
-    function render_production_workspace() {
-
-        console.log(
-            "Trying to render Production Workspace..."
-        );
-
-
-        // -----------------------------------------------------
-        // CHECK ROUTE
-        // -----------------------------------------------------
-
-        if (
-            !is_production_workspace()
-        ) {
-
+    function renderProductionWorkspace() {
+        if (!isProductionWorkspace()) {
+            removeProductionWorkspace();
             return;
-
         }
 
-
-        // -----------------------------------------------------
-        // PREVENT DUPLICATE
-        // -----------------------------------------------------
-
-        if (
-            document.querySelector(
-                ".production-custom-container"
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        // -----------------------------------------------------
-        // FIND WORKSPACE
-        // -----------------------------------------------------
-
-        const workspace =
-            document.querySelector(
-                ".layout-main-section"
-            );
-
+        const workspace = findWorkspaceContainer();
 
         if (!workspace) {
-
-            console.log(
-                "Workspace container not found."
+            console.warn(
+                "Production workspace content area not found."
             );
-
-
             return;
-
         }
 
+        // Reuse existing container if it is already in the
+        // correct location.
+        let container = workspace.querySelector(
+            ":scope > ." + CONTAINER_CLASS
+        );
 
-        // -----------------------------------------------------
-        // MAIN CONTAINER
-        // -----------------------------------------------------
+        if (!container) {
+            // Remove a previous copy if it was inserted
+            // into another container.
+            removeProductionWorkspace();
 
-        const container =
-            document.createElement(
-                "div"
+            container = document.createElement("div");
+            container.className = CONTAINER_CLASS;
+
+            const grid = document.createElement("div");
+            grid.className = "production-custom-grid";
+
+            SECTIONS.forEach(function (section) {
+                grid.appendChild(createCard(section));
+            });
+
+            container.appendChild(grid);
+        }
+
+        // KEY FIX:
+        // Insert cards at the beginning of the workspace,
+        // not after existing workspace content.
+        if (workspace.firstElementChild !== container) {
+            workspace.insertBefore(
+                container,
+                workspace.firstChild
             );
-
-
-        container.className =
-            "production-custom-container";
-
-
-        // -----------------------------------------------------
-        // GRID
-        // -----------------------------------------------------
-
-        const grid =
-            document.createElement(
-                "div"
-            );
-
-
-        grid.className =
-            "production-custom-grid";
-
-
-        // -----------------------------------------------------
-        // CREATE SECTIONS
-        // -----------------------------------------------------
-
-        SECTIONS.forEach(
-            function (section) {
-
-                grid.appendChild(
-                    create_card(
-                        section
-                    )
-                );
-
-            }
-        );
-
-
-        // -----------------------------------------------------
-        // ADD GRID
-        // -----------------------------------------------------
-
-        container.appendChild(
-            grid
-        );
-
-
-        // -----------------------------------------------------
-        // ADD TO WORKSPACE
-        // -----------------------------------------------------
-
-        workspace.appendChild(
-            container
-        );
-
+        }
 
         console.log(
-            "Production Workspace rendered successfully!"
+            "Production Workspace rendered at the top."
         );
-
     }
-
 
     // =========================================================
     // REMOVE CUSTOM WORKSPACE
     // =========================================================
 
-    function remove_production_workspace() {
-
-        const container =
-            document.querySelector(
-                ".production-custom-container"
-            );
-
-
-        if (
-            container
-        ) {
-
-            container.remove();
-
-        }
-
+    function removeProductionWorkspace() {
+        document
+            .querySelectorAll("." + CONTAINER_CLASS)
+            .forEach(function (container) {
+                container.remove();
+            });
     }
 
+    // =========================================================
+    // SCHEDULE RENDER
+    // =========================================================
+
+    let renderPending = false;
+
+    function scheduleRender() {
+        if (renderPending) return;
+
+        renderPending = true;
+
+        window.setTimeout(function () {
+            renderPending = false;
+
+            if (isProductionWorkspace()) {
+                renderProductionWorkspace();
+            } else {
+                removeProductionWorkspace();
+            }
+        }, 300);
+    }
 
     // =========================================================
-    // PAGE CHANGE
+    // FRAPPE ROUTE EVENTS
     // =========================================================
 
-    $(document).on(
-        "page-change",
-        function () {
+    if (window.frappe && frappe.router) {
+        frappe.router.on("change", scheduleRender);
+    }
 
-            console.log(
-                "Frappe page-change detected"
-            );
-
-
-            setTimeout(
-                function () {
-
-                    if (
-                        is_production_workspace()
-                    ) {
-
-                        render_production_workspace();
-
-                    }
-                    else {
-
-                        remove_production_workspace();
-
-                    }
-
-                },
-                500
-            );
-
-        }
-    );
-
+    if (window.jQuery) {
+        jQuery(document).on(
+            "page-change.production-workspace",
+            scheduleRender
+        );
+    }
 
     // =========================================================
     // INITIAL LOAD
     // =========================================================
 
-    $(document).ready(
-        function () {
-
-            setTimeout(
-                function () {
-
-                    render_production_workspace();
-
-                },
-                1000
-            );
-
-        }
-    );
-
-
-    // =========================================================
-    // ROUTER CHANGE
-    // =========================================================
-
-    if (
-        frappe.router
-    ) {
-
-        frappe.router.on(
-            "change",
-            function () {
-
-                setTimeout(
-                    function () {
-
-                        if (
-                            is_production_workspace()
-                        ) {
-
-                            render_production_workspace();
-
-                        }
-                        else {
-
-                            remove_production_workspace();
-
-                        }
-
-                    },
-                    500
-                );
-
-            }
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            scheduleRender,
+            { once: true }
         );
-
+    } else {
+        scheduleRender();
     }
 
 })();
